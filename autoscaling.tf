@@ -18,7 +18,7 @@ resource "aws_autoscaling_group" "example-autoscaling" {
   max_size                  = 2
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  target_group_arns   = "${aws_alb_target_group.target-group-1.arn}"
+  target_group_arns   = ["${aws_alb_target_group.target-group-1.arn}","${aws_alb_target_group.target-group-2.arn}"]
   force_delete              = true
 
   tag {

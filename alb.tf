@@ -4,12 +4,38 @@ resource "aws_alb" "my-alb" {
  security_groups = ["${aws_security_group.elb-securitygroup.id}"]
 }
 
-resource "aws_alb_listener" "listener-1" {
- load_balancer_arn = "${aws_alb.my-alb.arn}"
- port = "80"
+
+
+resource "aws_alb_listener" "listener" {
+  load_balancer_arn = "${aws_alb.my-alb.arn}"
+  port              = "80"
+
  
-default_action{
-   type = "forward"
-   target_group_arn = "${aws_alb_target_group.target-group-1.arn}"
- }
+  default_action {
+    type             = "forward"
+    target_group_arn = "${aws_alb_target_group.target-group-2.arn}"
+ } 
+
 }
+
+resource "aws_alb_listener_rule" "listener_rule" {
+    listener_arn = "${aws_alb_listener.listener.arn}"
+
+
+    action {
+      type             = "forward"
+      target_group_arn = "${aws_alb_target_group.target-group-2.arn}"
+    }   
+
+ 
+    condition {    
+     field  = "path-pattern"      
+     values = ["/index.html/*"] 
+    }
+
+    condition {
+    field = "host-header"
+    values = ["admin.servermyip.com"]
+    } 
+    
+ }
